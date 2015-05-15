@@ -13,15 +13,8 @@
                     
                 </div>
             </div> <!-- .col-lg-12 -->
-            <div class="col-lg-12 well">
-                <p class="alert alert-succes">Here is a gift for installing imgur api successfully</p>
-                <div class="text-center">
-                    
-                    <img src="{{ $image->getLink() }}" alt="" class="img img-round">
-                </div>
-            </div>
             
-        </div>
+        </div> <!-- /.row -->
     
 
 @stop

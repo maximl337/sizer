@@ -35,6 +35,11 @@ class MainController extends Controller {
 		return view('main.index');
 	}
 
+	public function phpinfo()
+	{
+		return phpinfo();
+	}
+
 	/**
 	 * Show the form for creating a new resource.
 	 *
