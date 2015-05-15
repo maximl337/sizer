@@ -4,6 +4,7 @@ use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
 use Illuminate\Http\Request;
+use Imgur;
 
 class MainController extends Controller {
 
@@ -14,6 +15,23 @@ class MainController extends Controller {
 	 */
 	public function index()
 	{
+
+		// Multiple Images
+		// $images = Imgur::api('gallery')->randomGalleryImages();
+
+		// foreach ($images as $image)
+		// {
+		//     return '<li><img src="' . $image->getLink() . '"></li>';
+		// }
+
+		//Single Image
+		// $imageId = 'I5wuDWu';
+
+		// $image = Imgur::api('image')->image($imageId);
+
+		// return '<img src="' . $image->getLink() . '" alt="">';
+
+
 		return view('main.index');
 	}
 
