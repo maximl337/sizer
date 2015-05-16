@@ -13,6 +13,7 @@ Route::group(['prefix' => 'admin'], function() {
 
     Route::get('/', 'AdminController@index');
 
+    Route::resource('silhouettes', 'SilhouetteController');
 });
 
 //Route::get('phpinfo', 'MainController@phpinfo');

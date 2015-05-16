@@ -19,7 +19,8 @@ class Silhouette extends Model {
         'image_url',
         'max_height_cm',
         'max_width_cm',
-        'offset_height_px'
+        'offset_height_px',
+        'one_cm_to_pixel_ratio'
 
     ];
 

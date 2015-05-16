@@ -24,14 +24,15 @@
                         {!! Form::text('raw_image_url', null, ['class' => 'form-control']) !!}    
                     </div>
                     
-                    <div class="form-group">
-                        {!! Form::label('product_width_cm', 'Product Width:') !!}
-                        {!! Form::text('product_width_cm', null, ['class' => 'form-control']) !!}    
-                    </div>
                     
                     <div class="form-group">
                         {!! Form::label('product_height_cm', 'Product Height:') !!}
                         {!! Form::text('product_height_cm', null, ['class' => 'form-control']) !!}    
+                    </div>
+
+                    <div class="form-group">
+                        {!! Form::label('product_width_cm', 'Product Width:') !!}
+                        {!! Form::text('product_width_cm', null, ['class' => 'form-control']) !!}    
                     </div>
                     
                         {!! Form::hidden('ip', $_SERVER['REMOTE_ADDR'], ['class' => 'form-control']) !!}    

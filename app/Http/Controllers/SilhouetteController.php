@@ -3,9 +3,13 @@
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
-use Illuminate\Http\Request;
+//use Illuminate\Http\Request;
 
-class AdminController extends Controller {
+use Request;
+use App\Silhouette;
+use Imgur;
+
+class SilhouetteController extends Controller {
 
 	/**
 	 * Display a listing of the resource.
@@ -14,7 +18,9 @@ class AdminController extends Controller {
 	 */
 	public function index()
 	{
-		return view('admin.index');
+		$silhouettes = Silhouette::paginate(6);
+
+		return view('silhouettes.index', compact('silhouettes'));
 	}
 
 	/**
@@ -24,7 +30,7 @@ class AdminController extends Controller {
 	 */
 	public function create()
 	{
-		//
+		return view('silhouettes.create');
 	}
 
 	/**
@@ -34,7 +40,36 @@ class AdminController extends Controller {
 	 */
 	public function store()
 	{
-		//
+
+		//get request
+		$input = Request::all();
+
+		//get original path
+		$image_path = $input['image_url']->getRealPath();
+
+		//build image array to upload
+		$imageData = array(
+		        'image' => $image_path,
+		        'type'  => 'file'
+		    );
+
+		//upload to imgur
+		$basic = Imgur::api('image')->upload($imageData);
+
+		//parse response
+		$resp = $basic->getData();
+
+		//assign new url to request
+		$input['image_url'] = $resp['link'];
+
+		//save
+		$silhouette = Silhouette::create($input);
+
+		$silhouette->save();
+
+		// send to home
+		return redirect('admin/silhouettes');
+
 	}
 
 	/**
@@ -45,7 +80,7 @@ class AdminController extends Controller {
 	 */
 	public function show($id)
 	{
-		//
+		dd($id);
 	}
 
 	/**
@@ -78,7 +113,16 @@ class AdminController extends Controller {
 	 */
 	public function destroy($id)
 	{
-		//
+
+		
+
+		$silhouette = Silhouette::findOrFail($id);
+
+
+		$silhouette->delete();
+
+		return redirect('admin/silhouettes'); 
+
 	}
 
 }
