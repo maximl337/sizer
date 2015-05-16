@@ -9,6 +9,12 @@ Route::get('/', 'MainController@index');
 
 Route::post('uploads', 'UploadController@store');
 
+Route::group(['prefix' => 'admin'], function() {
+
+    Route::get('/', 'AdminController@index');
+
+});
+
 //Route::get('phpinfo', 'MainController@phpinfo');
 
 // Route::get('role', function() {
