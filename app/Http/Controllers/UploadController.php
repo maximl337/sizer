@@ -62,7 +62,7 @@ class UploadController extends Controller {
 		
 		$this->clearTempDirectory();
 
-		 return view('uploads.index', compact('output'));
+		return view('uploads.index', compact('output'));
 
 	}
 
