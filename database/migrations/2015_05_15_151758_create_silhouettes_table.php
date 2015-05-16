@@ -19,6 +19,7 @@ class CreateSilhouettesTable extends Migration {
 			$table->decimal('max_height_cm', 18, 2)->unsigned();
 			$table->decimal('max_width_cm', 18, 2)->unsigned();
 			$table->integer('offset_height_px')->unsigned();
+			$table->integer('one_cm_to_pixel_ratio')->unsigned();
 			$table->timestamps();
 		});
 	}

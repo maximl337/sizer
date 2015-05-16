@@ -13,6 +13,7 @@ use App\Output;
 
 class UploadController extends Controller {
 
+
 	/**
 	 * Display a listing of the resource.
 	 *
@@ -88,6 +89,11 @@ class UploadController extends Controller {
     	
 	}
 
+	public function convertHeightToPixels($value='')
+	{
+		# code...
+	}
+
 	/**
 	 * [uploadToImgur description]
 	 * @param  [type] $image_path [description]
@@ -96,21 +102,14 @@ class UploadController extends Controller {
 	public function uploadToImgur($image_path)
 	{
 
-		
-
 			$imageData = array(
 		        'image' => $image_path,
-		        'type'  => 'file',
-		        'name' => 'Lipsum',
-		        'title' => 'Lorem Ipsum',
-		        'description' => 'Lorem Ipsum Dolor Sit Amet'
+		        'type'  => 'file'
 		    );
 
 			$basic = Imgur::api('image')->upload($imageData);
 
 			return $basic;
-
-		
 
 		
 	}
