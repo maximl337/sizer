@@ -7,4 +7,18 @@ Route::controllers([
 
 Route::get('/', 'MainController@index');
 
-Route::get('phpinfo', 'MainController@phpinfo');
+Route::post('uploads', 'UploadController@store');
+
+//Route::get('phpinfo', 'MainController@phpinfo');
+
+// Route::get('role', function() {
+
+//     $user = App\User::first();
+
+//     if($user->hasRole('Owner')) return 'You are the owner';
+
+//     return 'you are not the owner';
+
+// });
+
+

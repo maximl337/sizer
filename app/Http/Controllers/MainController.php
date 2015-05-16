@@ -5,6 +5,7 @@ use App\Http\Controllers\Controller;
 
 use Illuminate\Http\Request;
 use Imgur;
+use Image;
 
 class MainController extends Controller {
 
@@ -16,23 +17,16 @@ class MainController extends Controller {
 	public function index()
 	{
 
-		// Multiple Images
-		// $images = Imgur::api('gallery')->randomGalleryImages();
 
-		// foreach ($images as $image)
-		// {
-		//     return '<li><img src="' . $image->getLink() . '"></li>';
-		// }
+		//testing intervention
+		//$img = Image::make('http://i.imgur.com/ndSKDm1.png')->resize(300, 200);
 
-		//Single Image
-		// $imageId = 'I5wuDWu';
-
-		// $image = Imgur::api('image')->image($imageId);
-
-		// return '<img src="' . $image->getLink() . '" alt="">';
-
+    	//return $img->response('jpg');
 
 		return view('main.index');
+
+
+
 	}
 
 	public function phpinfo()

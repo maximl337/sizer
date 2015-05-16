@@ -136,6 +136,8 @@ return [
 		'Illuminate\Validation\ValidationServiceProvider',
 		'Illuminate\View\ViewServiceProvider',
 		'Redeman\Imgur\ImgurServiceProvider',
+		'Intervention\Image\ImageServiceProvider',
+		'Illuminate\Html\HtmlServiceProvider',
 
 		/*
 		 * Application Service Providers...
@@ -194,6 +196,9 @@ return [
 		'Validator' => 'Illuminate\Support\Facades\Validator',
 		'View'      => 'Illuminate\Support\Facades\View',
 		'Imgur'		=> 'Redeman\Imgur\Facades\Imgur',
+		'Image' 	=> 'Intervention\Image\Facades\Image',
+		'Form'		=> 'Illuminate\Html\FormFacade',
+		'Html'		=> 'Illuminate\Html\HtmlFacade',
 
 	],
 
