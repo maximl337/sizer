@@ -55,6 +55,7 @@ class UploadController extends Controller {
 		$path = $this->makeHumanSizeReferenceImage($upload);
 		
 		if($path):
+
 			$done = $this->uploadToImgur($path);
 
 			$resp = $done->getData();
@@ -68,6 +69,7 @@ class UploadController extends Controller {
 			$this->clearTempDirectory();
 
 			return view('uploads.index', compact('output'));
+
 		endif;
 
 		return "Could Not find a Human Silhouette that will accomodate your product size";
@@ -85,17 +87,17 @@ class UploadController extends Controller {
 
 		// get product image url
 		$original_product_image_url = $upload->raw_image_url; 
+
 		// get product height and weight
 		$upload_height = $upload->product_height_cm;
 		$upload_width = $upload->product_width_cm;
-
 		
 		// convert dimensions to cm if not in cm
 		$upload_height_cm = $upload_height;
 		$upload_width_cm = $upload_width;
 
 		// round the dimensions
-		 
+		
 		
 		
 		// check if there is a silhouette where height = $height and width > $width
@@ -117,10 +119,14 @@ class UploadController extends Controller {
 			$expected_product_height = $accomodating_height * $cm_pixel_ratio;
 
 			// resizeScale image to new_height
+			$final_product_image = Image::make($original_product_image_url)->heighten($expected_product_height);
+
+			// resize image to new height but dont increase original height
+			/*
 			$final_product_image = Image::make($original_product_image_url)->heighten($expected_product_height, function ($constraint) {
 			    $constraint->upsize();
 			});
-
+			*/
 			
 			// 
 			// overlay product image on silhouette offset height	
