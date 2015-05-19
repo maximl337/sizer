@@ -16,11 +16,19 @@
             
             <div class="col-lg-12">
                 
-                {!! Form::open(['url' => 'uploads']) !!}
+                {!! Form::open(['url' => 'uploads', 'files' => true]) !!}
+
+                     <div class="form-group">
+                        {!! Form::label('image', 'Image:') !!}    
+                        {!! Form::file('image', ['class' => 'form-control']) !!}     
+                    </div>
+
+                    <div class="form-group">
+                        <h4 class="text-center">OR</h4>
+                    </div>
 
                     <div class="form-group">
                         {!! Form::label('raw_image_url', 'Image URL:') !!}    
-
                         {!! Form::text('raw_image_url', null, ['class' => 'form-control']) !!}    
                     </div>
                     
@@ -43,6 +51,20 @@
                     
 
                 {!! Form::close() !!}
+
+            </div> <!-- /.col-lg-12 -->
+
+             <div class="col-lg-12">
+            
+                @if($errors->any())
+
+                    @foreach($errors->all() as $error)
+
+                        <p class="alert alert-danger text-center"> {{ $error }} </p>
+
+                    @endforeach
+
+                @endif
 
             </div>
 

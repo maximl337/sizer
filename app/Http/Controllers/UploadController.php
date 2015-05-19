@@ -40,27 +40,46 @@ class UploadController extends Controller {
 	 *
 	 * @return Response
 	 */
-	public function store()
+	public function store(Requests\UploadRequest $request)
 	{
+		// Handle raw upload
 		$input = Request::all();
+
+		if($input['image']) {
+
+			//get original path
+			$image_path = $input['image']->getRealPath();
+		
+		    //upload to imgur
+			$imgur_url = $this->uploadToImgur($image_path);
+
+			//assign new url to request
+			$input['raw_image_url'] = $imgur_url; 
+
+			
+		} 
 
 		$upload = new Upload($input);
 
 		$upload->save();
 
 		$upload_id = $upload->id;
+				
 
-		//$path =  $this->resizeAndSaveTempImage($upload->raw_image_url);
+		// format image ( if jpeg -> convert to png)
 
+		// convert dimensions to cm
+
+		// round the dimensions
+
+		//get the completed image
 		$path = $this->makeHumanSizeReferenceImage($upload);
+
+		$output = [];
 		
 		if($path):
 
-			$done = $this->uploadToImgur($path);
-
-			$resp = $done->getData();
-
-			$image_url = $resp['link'];
+			$image_url = $this->uploadToImgur($path);
 
 			$output = Output::create(['image_url' => $image_url, 'upload_id' => $upload_id]);
 
@@ -72,7 +91,13 @@ class UploadController extends Controller {
 
 		endif;
 
-		return "Could Not find a Human Silhouette that will accomodate your product size";
+		$messages = array(
+		    'required' => 'Could not find a silhouette that can accomodate your product size',
+		);
+
+		return view('uploads.index', compact('output'))->withErrors($messages);
+
+		//return "Could Not find a Human Silhouette that will accomodate your product size";
 
 	}
 
@@ -84,85 +109,76 @@ class UploadController extends Controller {
 	 */
 	public function makeHumanSizeReferenceImage(Upload $upload)
 	{
-
-		// get product image url
-		$original_product_image_url = $upload->raw_image_url; 
+		
+		$original_product_image_url = $upload->raw_image_url;
 
 		// get product height and weight
-		$upload_height = $upload->product_height_cm;
-		$upload_width = $upload->product_width_cm;
-		
-		// convert dimensions to cm if not in cm
-		$upload_height_cm = $upload_height;
-		$upload_width_cm = $upload_width;
-
-		// round the dimensions
-		
+		$upload_height_cm = $upload->product_height_cm;
+		$upload_width_cm = $upload->product_width_cm;
 		
 		
 		// check if there is a silhouette where height = $height and width > $width
 		$silhouette = Silhouette::where('max_height_cm', '=', $upload_height_cm)
-									->where('max_width_cm', '>=', $upload_width_cm)
-									->first(); 
-        
-        
-		// if image was found - get cm-to-pixel ratio of that image
-		if($silhouette) {
+								->where('max_width_cm', '>=', $upload_width_cm)
+								->first(); 
 
-			// Get silhouette data
-			$cm_pixel_ratio 		= $silhouette->one_cm_to_pixel_ratio;
-			$offset_height_px 		= $silhouette->offset_height_px;
-			$accomodating_height 	= $silhouette->max_height_cm;
-			$silhouette_url 		= $silhouette->image_url;
+		// format and return image						
+		return $this->imageOutputHandler($silhouette, $original_product_image_url);
 
 
-			$expected_product_height = $accomodating_height * $cm_pixel_ratio;
+	}
 
-			// resizeScale image to new_height
-			$final_product_image = Image::make($original_product_image_url)->heighten($expected_product_height);
+	public function imageOutputHandler($silhouette, $original_product_image_url)
+	{
 
-			// resize image to new height but dont increase original height
-			/*
-			$final_product_image = Image::make($original_product_image_url)->heighten($expected_product_height, function ($constraint) {
-			    $constraint->upsize();
-			});
-			*/
-			
-			// 
-			// overlay product image on silhouette offset height	
-			$img = Image::make($silhouette_url)->insert($final_product_image, 'top', 0, $offset_height_px);
+		if(empty($silhouette)) return false;
+		
+		if(empty($original_product_image_url)) return false;
 
-			$tmp_name = 'final-output-' . microtime(true) . '.jpg';
+		// Get silhouette data
+		$cm_pixel_ratio 		= $silhouette->one_cm_to_pixel_ratio;
+		$offset_height_px 		= $silhouette->offset_height_px;
+		$accomodating_height 	= $silhouette->max_height_cm;
+		$silhouette_url 		= $silhouette->image_url;
 
-			$path = 'tmp/' . $tmp_name;
 
-			$img->save($path);
+		$expected_product_height = $accomodating_height * $cm_pixel_ratio;
+		
+		// resizeScale image to new_height
+		$final_product_image = Image::make($original_product_image_url)->heighten($expected_product_height);
 
-			return $path;
+		// overlay product image on silhouette offset height	
+		$img = Image::make($silhouette_url)->insert($final_product_image, 'top', 0, $offset_height_px);
 
-		} // EO if silhouette
+		// save image to tmp to be uploaded to imgur
+		$tmp_name = 'final-output-' . microtime(true) . '.jpg';
 
-		return false;
+		$path = 'tmp/' . $tmp_name;
+
+		$img->save($path);
+
+		return $path;
 	}
 
 	/**
 	 * [uploadToImgur description]
 	 * @param  [type] $image_path [description]
-	 * @return [type]             [description]
+	 * @return [url]             [return link from imgur upload]
 	 */
 	public function uploadToImgur($image_path)
 	{
 
-			$imageData = array(
-		        'image' => $image_path,
-		        'type'  => 'file'
-		    );
+		$imageData = array(
+	        'image' => $image_path,
+	        'type'  => 'file'
+	    );
 
-			$basic = Imgur::api('image')->upload($imageData);
+		$basic = Imgur::api('image')->upload($imageData);
 
-			return $basic;
+		//parse response
+		$resp = $basic->getData();
 
-		
+		return $resp['link'];
 	}
 
 	/**
