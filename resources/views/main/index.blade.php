@@ -29,21 +29,25 @@
 
                     <div class="form-group">
                         {!! Form::label('raw_image_url', 'Image URL:') !!}    
-                        {!! Form::text('raw_image_url', null, ['class' => 'form-control']) !!}    
+                        {!! Form::text('raw_image_url', null, ['class' => 'form-control', 'placeholder' => 'eg: http://www.example.com/your_image.png']) !!}    
                     </div>
                     
+                    <div class="form-group">
+                        {!! Form::label('units', 'Unit of measurement:') !!}
+                        {!! Form::select('units', ['cm' => 'centimeters', 'in' => 'inches'], 'cm', ['class' => 'form-control', 'required' => 'required']) !!}    
+                    </div>
                     
                     <div class="form-group">
                         {!! Form::label('product_height_cm', 'Product Height:') !!}
-                        {!! Form::text('product_height_cm', null, ['class' => 'form-control']) !!}    
+                        {!! Form::text('product_height_cm', null, ['class' => 'form-control', 'required' => 'required', 'placeholder' => 'eg: 21.93']) !!}    
                     </div>
 
                     <div class="form-group">
                         {!! Form::label('product_width_cm', 'Product Width:') !!}
-                        {!! Form::text('product_width_cm', null, ['class' => 'form-control']) !!}    
+                        {!! Form::text('product_width_cm', null, ['class' => 'form-control', 'required' => 'required', 'placeholder' => 'eg: 10.20']) !!}    
                     </div>
                     
-                        {!! Form::hidden('ip', $_SERVER['REMOTE_ADDR'], ['class' => 'form-control']) !!}    
+                        {!! Form::hidden('ip', $_SERVER['REMOTE_ADDR'], ['class' => 'form-control', 'required' => 'required']) !!}    
                     
                     <div class="form-group">
                         {!! Form::submit('Upload', ['class' => 'btn btn-primary form-control']) !!}    

@@ -6,15 +6,16 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>Sizer - Get human size references for your products</title>
 
-	<link href="{{ asset('/css/app.css') }}" rel="stylesheet">
-
+	
 	<!-- Fonts -->
 	<link href='//fonts.googleapis.com/css?family=Roboto:400,300' rel='stylesheet' type='text/css'>
 
 	<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css">
     <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css" rel="stylesheet">
-
-
+	
+	
+	<link href="{{ asset('/css/app.css') }}" rel="stylesheet">
+	<link href="/css/bootstrap-overwrite.css" rel="stylesheet">
 	<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
 	<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
 	<!--[if lt IE 9]>

@@ -43,9 +43,11 @@ class UploadController extends Controller {
 	public function store(Requests\UploadRequest $request)
 	{
 		// Handle raw upload
-		$input = Request::all();
+		$input = $request->all();
 
-		if($input['image']) {
+		$output = [];
+		
+		if($request->hasFile('image')) {
 
 			//get original path
 			$image_path = $input['image']->getRealPath();
@@ -59,23 +61,24 @@ class UploadController extends Controller {
 			
 		} 
 
+		// format dimensions
+		$dimensions = $this->formatDimensions($input['units'], $input['product_height_cm'], $input['product_width_cm']);
+
+		$input['product_height_cm'] = $dimensions['product_height_cm'];
+
+		$input['product_width_cm'] = $dimensions['product_width_cm'];
+
 		$upload = new Upload($input);
 
 		$upload->save();
 
 		$upload_id = $upload->id;
 				
-
 		// format image ( if jpeg -> convert to png)
-
-		// convert dimensions to cm
-
-		// round the dimensions
 
 		//get the completed image
 		$path = $this->makeHumanSizeReferenceImage($upload);
 
-		$output = [];
 		
 		if($path):
 
@@ -95,19 +98,36 @@ class UploadController extends Controller {
 		    'required' => 'Could not find a silhouette that can accomodate your product size',
 		);
 
-		return view('uploads.index', compact('output'))->withErrors($messages);
+		return redirect('/')->withErrors($messages);
 
 		//return "Could Not find a Human Silhouette that will accomodate your product size";
 
 	}
 
+	private function formatDimensions($unit, $height, $width)
+	{
+
+		// if inches are selected then convert to cm
+		if($unit == 'in') {
+
+			$height *= 2.54; 
+
+			$width *= 2.54;
+		}
+
+		return [
+			'product_height_cm' => round($height),
+			'product_width_cm' => round($width),
+		];
+
+	}
 
 	/**
 	 * [makeHumanSizeReferenceImage description]
 	 * @param  Upload $upload [description]
 	 * @return [type]         [description]
 	 */
-	public function makeHumanSizeReferenceImage(Upload $upload)
+	private function makeHumanSizeReferenceImage(Upload $upload)
 	{
 		
 		$original_product_image_url = $upload->raw_image_url;
@@ -128,7 +148,7 @@ class UploadController extends Controller {
 
 	}
 
-	public function imageOutputHandler($silhouette, $original_product_image_url)
+	private function imageOutputHandler($silhouette, $original_product_image_url)
 	{
 
 		if(empty($silhouette)) return false;
@@ -165,7 +185,7 @@ class UploadController extends Controller {
 	 * @param  [type] $image_path [description]
 	 * @return [url]             [return link from imgur upload]
 	 */
-	public function uploadToImgur($image_path)
+	private function uploadToImgur($image_path)
 	{
 
 		$imageData = array(
@@ -185,7 +205,7 @@ class UploadController extends Controller {
 	 * [clearTempDirectory description]
 	 * @return [type] [description]
 	 */
-	public function clearTempDirectory()
+	private function clearTempDirectory()
 	{
 		// get all file names
 		$files = glob('tmp/*'); 
